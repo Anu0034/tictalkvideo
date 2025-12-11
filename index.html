@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTalk</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <header class="top-bar">
+            <h1>TicTalk</h1>
+        </header>
+        <main class="feed-container" id="feed">
+            <div class="loading-container">
+                <div class="shimmer"></div>
+                <div class="shimmer-text"></div>
+            </div>
+        </main>
+        <div class="sidebar">
+            <button class="action-button" id="like">
+                ❤️ <span>0</span>
+            </button>
+            <button class="action-button" id="comment">
+                💬 <span>0</span>
+            </button>
+            <button class="action-button" id="share">
+                🔗 <span>0</span>
+            </button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
