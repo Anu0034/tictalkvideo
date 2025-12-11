@@ -226,7 +226,9 @@ function initUpload() {
 
 // Start
 function init() {
-    API_BASE = process.env.API_BASE;
+    console.log('window.process.env:', window.process.env);
+    API_BASE = window.process.env.API_BASE;
+    console.log('API_BASE:', API_BASE);
     fetchVideos();
     initInfiniteScroll();
     initKeyboardControls();
