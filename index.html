@@ -8,8 +8,11 @@
 </head>
 <body>
     <div class="app">
+        <div id="upload-status" class="upload-status" style="display: none;">
+            Uploading video...
+        </div>
         <header class="top-bar">
-            <h1>TicTalk</h1>
+            <h1>For You</h1>
         </header>
         <main class="feed-container" id="feed">
             <div class="loading-container">
@@ -19,16 +22,61 @@
         </main>
         <div class="sidebar">
             <button class="action-button" id="like">
-                ❤️ <span>0</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <span>0</span>
             </button>
             <button class="action-button" id="comment">
-                💬 <span>0</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-5.5 5.5V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>0</span>
             </button>
             <button class="action-button" id="share">
-                🔗 <span>0</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 1 0-3-3c0 .24.04.48.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 1 0 0 6c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.22-.09.45-.09.7a2.99 2.99 0 0 0 3 3z"/>
+                </svg>
+                <span>0</span>
             </button>
         </div>
+        <nav class="bottom-nav">
+            <button class="nav-button" id="home">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12l2 2v6c0 1.1.9 2 2 2h4v-5c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v5h4c1.1 0 2-.9 2-2v-6l2-2-9-9-9 9z"/>
+                </svg>
+                <span>Home</span>
+            </button>
+            <button class="nav-button" id="search">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <span>Search</span>
+            </button>
+            <button class="nav-button plus">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4v16m8-8H4"/>
+                </svg>
+            </button>
+            <button class="nav-button" id="messages">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="M22 10l-10 6-10-6"/>
+                </svg>
+                <span>Inbox</span>
+            </button>
+            <button class="nav-button" id="profile">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Profile</span>
+            </button>
+        </nav>
     </div>
+    <input type="file" id="uploadInput" accept="video/*" style="display: none;">
+    <script src="config.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

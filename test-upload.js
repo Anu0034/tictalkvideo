@@ -5,7 +5,7 @@ const path = require('path');
 const filePath = path.join(__dirname, 'test.mp4');
 const fileBuffer = fs.readFileSync(filePath);
 
-const url = 'http://localhost:7071/api/uploadVideo';
+const url = 'http://localhost:7072/api/uploadVideo';
 
 fetch(url, {
     method: 'POST',

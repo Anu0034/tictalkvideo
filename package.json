@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/functions/*.js",
   "scripts": {
-    "start": "func start",
+    "start": "npx func start",
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {

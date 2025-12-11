@@ -60,15 +60,37 @@ app.http('uploadVideo', {
             context.log('Getting container client for videos');
             const container = blobService.getContainerClient("videos");
             context.log('Creating container if not exists');
+
             await container.createIfNotExists();
             context.log('Container created');
+
+            // Set container public access policy
+            await container.setAccessPolicy('blob');
+            context.log('Container access set to public');
+
+            // Set HTTP headers for CORS and content type
+            const uploadOptions = {
+                blobHTTPHeaders: {
+                    blobContentType: 'video/mp4',
+                    blobContentDisposition: 'inline'
+                },
+                metadata: {
+                    'uploadedAt': new Date().toISOString()
+                }
+            };
+
             const blob = container.getBlockBlobClient(fileName);
             context.log(`Uploading to blob: ${fileName}`);
-            await blob.uploadData(buffer);
+            await blob.uploadData(buffer, uploadOptions);
             context.log('Upload successful');
 
             return {
                 status: 200,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type'
+                },
                 jsonBody: {
                     message: "Video uploaded successfully!",
                     fileName,

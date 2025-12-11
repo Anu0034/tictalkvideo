@@ -22,6 +22,11 @@ app.http("listVideos", {
 
       return {
         status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        },
         jsonBody: results,
       };
     } catch (error) {
@@ -29,6 +34,11 @@ app.http("listVideos", {
       context.log(error.stack);
       return {
         status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        },
         jsonBody: { error: error.message },
       };
     }

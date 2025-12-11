@@ -5,41 +5,79 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Proxima Nova', sans-serif;
     background: #000;
     color: #fff;
     height: 100vh;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .app {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    background: #000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
 }
 
 .top-bar {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 10px 20px;
+    background: transparent;
+    padding: 12px 20px;
     z-index: 100;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
 }
 
 .top-bar h1 {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.top-bar::before {
+    content: 'Following';
+    font-size: 17px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+.top-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 3px;
+    background: #fff;
+    border-radius: 2px 2px 0 0;
 }
 
 .feed-container {
     flex: 1;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
-    margin-top: 50px; /* top bar height */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.feed-container::-webkit-scrollbar {
+    display: none;
 }
 
 .video-item {
@@ -49,7 +87,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #111;
+    background: #000;
 }
 
 .video-item video {
@@ -78,23 +116,24 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #111;
+    background: #000;
     scroll-snap-align: start;
 }
 
 .shimmer {
     width: 80%;
     height: 60%;
-    background: linear-gradient(90deg, #333 25%, #555 50%, #333 75%);
+    background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
     margin-bottom: 20px;
+    border-radius: 8px;
 }
 
 .shimmer-text {
     width: 60%;
     height: 20px;
-    background: #333;
+    background: #1a1a1a;
     border-radius: 10px;
 }
 
@@ -104,56 +143,193 @@ body {
 }
 
 .sidebar {
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: absolute;
+    right: 12px;
+    bottom: 200px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
     z-index: 50;
 }
 
 .action-button {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
     border: none;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     color: #fff;
-    font-size: 24px;
+    font-size: 32px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: transform 0.1s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-.action-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+.action-button:active {
+    transform: scale(0.9);
+}
+
+.action-button .icon {
+    width: 32px;
+    height: 32px;
+    stroke: #fff;
+    stroke-width: 2;
+    fill: none;
+    display: block;
+    margin: 0 auto 2px;
 }
 
 .action-button span {
-    font-size: 12px;
-    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 2px;
     display: block;
+    letter-spacing: -0.2px;
+}
+
+.bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+}
+
+.nav-button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: color 0.2s;
+}
+
+.nav-button:hover {
+    color: #fff;
+}
+
+.nav-button.plus {
+    color: #fff;
+    font-size: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    margin: 0 4px;
+}
+
+.nav-button span {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.nav-button .nav-icon {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    display: block;
+}
+
+.nav-button.plus .nav-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.upload-status {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 2000;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.video-info {
+    position: absolute;
+    bottom: 120px;
+    left: 12px;
+    right: 80px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 60;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-info span {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.video-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+    word-wrap: break-word;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+    .top-bar {
+        padding: 10px 16px;
+    }
+
     .top-bar h1 {
-        font-size: 20px;
+        font-size: 16px;
+    }
+
+    .top-bar::before {
+        font-size: 16px;
     }
 
     .sidebar {
-        right: 10px;
-        gap: 15px;
+        right: 8px;
+        bottom: 120px;
+        gap: 20px;
     }
 
     .action-button {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+    }
+
+    .action-button span {
+        font-size: 12px;
     }
 }

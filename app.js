@@ -3,14 +3,11 @@ const loadingContainer = feed.querySelector('.loading-container');
 const likeBtn = document.getElementById('like');
 const commentBtn = document.getElementById('comment');
 const shareBtn = document.getElementById('share');
+const uploadInput = document.getElementById('uploadInput');
+const plusBtn = document.querySelector('.nav-button.plus');
+const uploadStatus = document.getElementById('upload-status');
 
-const sampleVideos = [
-    { "name": "video-1764077443079.mp4", "url": "https://anuvideostore.blob.core.windows.net/videos/video-1764077443079.mp4" },
-    { "name": "video-1765474051382.mp4", "url": "https://anuvideostore.blob.core.windows.net/videos/video-1765474051382.mp4" },
-    { "name": "video-1765476301896.mp4", "url": "https://anuvideostore.blob.core.windows.net/videos/video-1765476301896.mp4" },
-    { "name": "video-1765476622528.mp4", "url": "https://anuvideostore.blob.core.windows.net/videos/video-1765476622528.mp4" },
-    { "name": "video-1765477276846.mp4", "url": "https://anuvideostore.blob.core.windows.net/videos/video-1765477276846.mp4" }
-];
+let API_BASE;
 
 let videos = [];
 let currentPlaying = null;
@@ -78,27 +75,56 @@ function updateActiveVideo(activeVideo) {
 
 async function fetchVideos() {
     try {
-        const response = await fetch('http://localhost:7071/api/listVideos');
+        console.log('Fetching videos from API...');
+        const response = await fetch(`${API_BASE}/listVideos`);
         videos = await response.json();
+        console.log('Fetched', videos.length, 'videos successfully');
+
+        // Only render videos if we don't already have video items
+        if (feed.querySelectorAll('.video-item').length === 0) {
+            renderVideos();
+            feed.removeChild(loadingContainer);
+        } else {
+            console.log('Videos already rendered, skipping render');
+        }
     } catch (e) {
-        videos = sampleVideos;
+        console.error('Failed to fetch videos:', e);
+        // Only show error if no videos are loaded yet
+        if (videos.length === 0) {
+            feed.innerHTML = '<div class="error-message">Failed to load videos. Please check your connection.</div>';
+            feed.removeChild(loadingContainer);
+        }
     }
-    renderVideos();
-    feed.removeChild(loadingContainer);
 }
 
 function renderVideos() {
+    console.log('Rendering', videos.length, 'videos');
     videos.forEach((videoData, index) => {
+        console.log('Rendering video:', videoData.name, videoData.url);
+
         const videoItem = document.createElement('div');
         videoItem.className = 'video-item';
         videoItem.innerHTML = `
-            <video preload="metadata" muted></video>
+            <video preload="metadata" muted controls></video>
             <div class="video-overlay" style="display: none;">Video unavailable — Retry</div>
         `;
         feed.appendChild(videoItem);
+
         const video = videoItem.querySelector('video');
+        // Set src immediately for debugging
+        video.src = videoData.url;
+        console.log('Set video src to:', videoData.url);
+
+        video.addEventListener('loadeddata', () => {
+            console.log('Video loaded:', videoData.name);
+        });
+
+        video.addEventListener('error', (e) => {
+            console.error('Video error for', videoData.name, e);
+            showError(videoItem);
+        });
+
         video.addEventListener('click', () => togglePlayPause(video));
-        video.addEventListener('error', () => showError(videoItem));
         const overlay = videoItem.querySelector('.video-overlay');
         overlay.addEventListener('click', () => retryVideo(video, videoData.url));
         intersectionObserver.observe(video);
@@ -129,36 +155,7 @@ function togglePlayPause(video) {
 }
 
 function initInfiniteScroll() {
-    feed.addEventListener('scroll', () => {
-        const scrollTop = feed.scrollTop;
-        const scrollHeight = feed.scrollHeight;
-        const clientHeight = feed.clientHeight;
-        if (scrollTop + clientHeight >= scrollHeight - clientHeight / 2) {
-            loadMoreVideos();
-        }
-    });
-}
-
-function loadMoreVideos() {
-    const oldLength = videos.length;
-    videos = videos.concat(sampleVideos); // Reuse for demo
-    for (let i = 0; i < sampleVideos.length; i++) {
-        const videoData = sampleVideos[i];
-        const videoItem = document.createElement('div');
-        videoItem.className = 'video-item';
-        videoItem.innerHTML = `
-            <video preload="metadata" muted></video>
-            <div class="video-overlay" style="display: none;">Video unavailable — Retry</div>
-        `;
-        feed.appendChild(videoItem);
-        const video = videoItem.querySelector('video');
-        video.addEventListener('click', () => togglePlayPause(video));
-        video.addEventListener('error', () => showError(videoItem));
-        const overlay = videoItem.querySelector('.video-overlay');
-        overlay.addEventListener('click', () => retryVideo(video, videoData.url));
-        intersectionObserver.observe(video);
-        lazyObserver.observe(video);
-    }
+    // Infinite scroll disabled - only fetch videos from Azure
 }
 
 function initKeyboardControls() {
@@ -187,8 +184,61 @@ function updateCount(type) {
     span.textContent = parseInt(span.textContent) + 1;
 }
 
+async function uploadVideo(file) {
+    const formData = new FormData();
+    formData.append('video', file);
+
+    uploadStatus.textContent = 'Uploading video...';
+    uploadStatus.style.display = 'block';
+
+    try {
+        const response = await fetch(`${API_BASE}/uploadVideo`, {
+            method: 'POST',
+            body: formData
+        });
+        if (response.ok) {
+            uploadStatus.textContent = 'Video uploaded successfully! Refresh to see it.';
+        } else {
+            uploadStatus.textContent = 'Upload failed';
+        }
+    } catch (e) {
+        console.error('Upload error:', e);
+        uploadStatus.textContent = 'Upload failed';
+    }
+
+    setTimeout(() => {
+        uploadStatus.style.display = 'none';
+    }, 3000);
+}
+
+function initUpload() {
+    plusBtn.addEventListener('click', () => {
+        uploadInput.click();
+    });
+
+    uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            uploadVideo(file);
+        }
+    });
+}
+
 // Start
-fetchVideos();
-initInfiniteScroll();
-initKeyboardControls();
-initSidebar();
+function init() {
+    API_BASE = process.env.API_BASE;
+    fetchVideos();
+    initInfiniteScroll();
+    initKeyboardControls();
+    initSidebar();
+    initUpload();
+}
+
+if (window.envLoaded) {
+    init();
+} else {
+    window.addEventListener('load', () => {
+        // Wait a bit for env load
+        setTimeout(init, 100);
+    });
+}
